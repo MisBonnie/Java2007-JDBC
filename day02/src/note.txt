@@ -1,0 +1,81 @@
+JDBC规范:
+  1.导入jar包
+  2.加载驱动 com.mysql.cj.jdbc.Driver
+  3.通过DriverManager 获得连接 Connection
+    url username password
+    url:  jdbc:mysql://localhost:3306/database
+          jdbc:mysql:///database
+  4.Statement PreparedStatement
+  5.执行SQL: execute() executeUpdate() executeQuery()
+  6.如果有结果, 处理结果 ResultSet - next()
+  7.释放资源 close()
+
+PreparedStatement: 预编译
+  select * from user where id = ?
+  setInt/String/Date(1, value)
+
+事务处理:
+  conn.setAutoCommit(false);
+  conn.commit(); -- 代码正常
+  conn.rollback(); -- 代码异常
+
+JDBCUtils 封装
+
+1.连接池 - 存储连接
+  好处: 1.在连接池中的连接, 在连接池初始化时就已经创建好
+         在使用连接的时候, 就可以快速获得连接对象
+       2.连接使用完成后, 可以将连接归还给连接池, 让连接重复使用
+2.JDBC提供的连接池规范 DataSource
+  市面常见连接池:
+    Apache - dbcp
+    C3P0
+    alibaba - druid
+3.使用c3p0第三方连接池步骤
+  a.导入jar包
+  b.编写配置文件  c3p0-config.xml/c3p0.properties
+    位置: 必须在类路径的根目录中 -> src中
+  c.创建连接池对象 ComboPooledDataSource
+
+通过连接池获得的连接关闭后, 连接对象返回给连接池, 并且引用设置为null
+通过JDBC获得的连接关闭后, 连接对象还在, 但是状态是"已关闭", 不能再使用
+
+4.Druid连接池使用步骤
+    a.导入jar包
+    b.编写配置文件
+      位置和名字都随意
+    c.通过工厂创建连接池对象
+      DruidDataSourceFactory.createDataSource(Properties)
+5.JdbcTemplate -> Spring, DBUtils-apache
+    a.导包
+    b.创建JdbcTemplate对象
+    c.使用jdbcTemplate操作数据库
+      update(sql): DML操作
+      queryForMap(sql): 只能处理一条结果集,
+        将列名作为key, 列中的数据作为value封装到map中
+        map -> JavaBean, 工具可以使用
+      queryForList(sql): 将查询出来的结果集,
+        每一行封装为一个map, 再将这个map封装到list中
+      queryForObject(sql, Class): 查询单列数据
+        并且将这一列数据, 转换成Class对应的类型对象
+      query(sql, RowMapper)
+RowMapper: 已知实现类 BeanPropertyRowMapper
+      new BeanPropertyRowMapper(Class)
+      注意: 实体类的属性名 和 表的字段名一致
+
+操作数据库功能:
+    1.根据id删除记录
+    2.根据id修改记录
+    3.插入新的记录
+    4.根据id查询记录
+    5.查询所有记录
+    6.查询总记录条数
+
+线程池好处:
+  1.线程池中的线程 在线程池初始化时就已经创建好
+    在使用线程的时候, 就可以快速获得线程对象
+  2.线程使用完毕后, 可以归还给线程池, 让线程做到重复利用
+
+
+
+
+

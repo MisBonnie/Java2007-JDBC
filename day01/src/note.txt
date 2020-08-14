@@ -1,0 +1,67 @@
+JDBC: Java DataBase Connective
+  Java连接数据库的规范 - 接口
+java.sql -> JDBC 规范相关的接口,类
+  实现类: 各个数据库厂商来提供
+
+1.Connection - 连接
+    a.引入jar包
+      mysql-connector-java-5.1.8-bin.jar
+        推荐数据库版本: 5.5  5.7  5.x
+      mysql-connector-java-8.0.16.jar
+        推荐数据库版本: 8.x
+    b.加载驱动 - 类
+      Class.forName("驱动类名");
+      oracle: oracle.jdbc.driver.OracleDriver
+      mysql: com.mysql.jdbc.Driver
+    c.获得连接
+      DriverManager.getConnection(url, username, password);
+      url: jdbc:mysql://ip:port/database?serverTimezone=GMT
+      username: 账号
+      password: 密码
+    d.获得执行SQL语句的Statement对象
+    e.执行SQL, 获得结果 boolean int ResultSet
+    f.释放资源
+
+登录案例:
+   输入用户名: 随意
+   输入密码: a' or '1'='1
+   形成的SQL语句:
+      select * from user
+      where name = '111' and password = 'a'
+            or '1'='1'
+   通过字符串的拼接, 将整个SQL语句的语义结构改变了, 从而达到一定目的
+   称之为SQL注入 -> 不安全的语法, 一定要避免
+
+PreparedStatement extends Statement
+    预编译
+    sql就是一个半成品 ?-占位符
+     select * from user where name = ? and password = ?
+    执行sql语句:
+     给占位符传参
+  1.有效防止SQL注入
+  2.当多次执行相同的/相似的SQL, 只需要预编译一次
+    而Statement需要编译多次, PreparedStatement效率更高
+
+JDBC中的事务, 绑定在连接对象上的, 都是默认自动提交
+   1.设置事务手动提交
+     conn.setAutoCommit(false)
+   2.代码正常结束, 提交事务
+     conn.commit();
+   3.代码出现异常, 回滚事务
+     conn.rollback()
+   4.了解:
+      保存事务结点 SavePoint a = conn.setSavePoint();
+      回滚到指定的结点 conn.rollback(a);
+
+复习:
+  类加载:将类的信息从字节码文件中读取到内存的方法区中
+  什么时候类加载:
+    1.第一次创建对象
+    2.第一次使用静态方法,静态变量
+    3.使用子类会加载父类
+    4.类名.class
+    5.Class.forName("类的全限定类名") java.util.List  java.lang.String
+
+
+
+
