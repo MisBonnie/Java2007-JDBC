@@ -62,13 +62,20 @@ RowMapper: 已知实现类 BeanPropertyRowMapper
       new BeanPropertyRowMapper(Class)
       注意: 实体类的属性名 和 表的字段名一致
 
-操作数据库功能:
+操作数据库基本功能:
     1.根据id删除记录
     2.根据id修改记录
     3.插入新的记录
     4.根据id查询记录
-    5.查询所有记录
-    6.查询总记录条数
+    5.查询所有记录 - 条件, 分页
+    6.查询总记录条数 - 条件
+
+MVC对于数据库的规范:
+   M: Module - 业务模块 -> 操作数据库 DAO
+      Data Access Object
+   一张表emp, 对应一个实体类Emp, 再对应一个DAO-EmpDao
+   EmpDao中的方法, 就是操作数据库基本功能
+   再对应一个测试类, 测试Dao中的所有方法
 
 线程池好处:
   1.线程池中的线程 在线程池初始化时就已经创建好
